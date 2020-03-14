@@ -10,6 +10,8 @@ import Cocoa
 
 class Document: NSDocument {
 
+    var text: String = ""
+    
     override init() {
         super.init()
         // Add your subclass-specific initialization here.
@@ -25,20 +27,13 @@ class Document: NSDocument {
         let windowController = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier("Document Window Controller")) as! NSWindowController
         self.addWindowController(windowController)
     }
-
-    override func data(ofType typeName: String) throws -> Data {
-        // Insert code here to write your document to data of the specified type, throwing an error in case of failure.
-        // Alternatively, you could remove this method and override fileWrapper(ofType:), write(to:ofType:), or write(to:ofType:for:originalContentsURL:) instead.
-        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+    
+    override func write(to url: URL, ofType typeName: String) throws {
+        return try text.write(to: url, atomically: false, encoding: String.Encoding.utf8)
     }
 
-    override func read(from data: Data, ofType typeName: String) throws {
-        // Insert code here to read your document from the given data of the specified type, throwing an error in case of failure.
-        // Alternatively, you could remove this method and override read(from:ofType:) instead.
-        // If you do, you should also override isEntireFileLoaded to return false if the contents are lazily loaded.
-        throw NSError(domain: NSOSStatusErrorDomain, code: unimpErr, userInfo: nil)
+    override func read(from url: URL, ofType typeName: String) throws {
+        text = try String(contentsOf: url, encoding: String.Encoding.utf8)
     }
-
-
 }
 
